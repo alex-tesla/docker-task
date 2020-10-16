@@ -2,13 +2,7 @@
 version: '3.1'
 
 services:
-  admin:
-    image: devsav/admin-server
-    restart: always
-    ports:
-      - "9003:9003"
-    env_file:
-      - client-server.env
+
 
   mongo:
     image: mongo
@@ -19,19 +13,23 @@ services:
   mongo-express:
     image: mongo-express
     restart: always
-    ports:
-      - "8081:8081"
     env_file:
       - client-server.env
+    ports:
+      - "8081:8081"
+
+  admin:
+    image: devsav/admin-server
+    restart: on-failure
+    ports:
+      - "9003:9003"
 
   client:
     image: devsav/client-service
-    restart: always
-    ports:
-      - "8080:8080"
-    depends_on:
-      - admin
-      - mongo
-      - mongo-express
+    restart: on-failure
     env_file:
       - client-server.env
+    depends_on:
+      - mongo
+    ports:
+      - "8080:8080"
